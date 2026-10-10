@@ -11,6 +11,11 @@ app.use(express.json());
 
 // MongoDB Connection
 
+
+console.log('MongoDB URI has legacy options:',
+  /useNewUrlParser|useUnifiedTopology/i.test(process.env.MONGO_URI || '')
+);
+
 mongoose.connect(process.env.MONGO_URI)
   .then(() => console.log('✓ MongoDB connected'))
   .catch(err => console.error('MongoDB error:', err));
