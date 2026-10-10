@@ -12,15 +12,19 @@ app.use(express.json());
 // MongoDB Connection
 
 
-
-console.log('MongoDB URI has legacy options:',
-  /useNewUrlParser|useUnifiedTopology/i.test(process.env.MONGO_URI || '')
+console.log('MongoDB legacy options check:',
+  /[?&](useNewUrlParser|useUnifiedTopology)=/i.test(process.env.MONGO_URI || '')
 );
 
-mongoose.connect(process.env.MONGO_URI)
-  .then(() => console.log('✓ MongoDB connected'))
-  .catch(err => console.error('MongoDB error:', err));
+const mongoUri = (process.env.MONGO_URI || '')
+  .replace(/([?&])useNewUrlParser=[^&]*&?/gi, '$1')
+  .replace(/([?&])useUnifiedTopology=[^&]*&?/gi, '$1')
+  .replace(/\?&/g, '?')
+  .replace(/[?&]$/, '');
 
+mongoose.connect(mongoUri)
+  .then(() => console.log('MongoDB connected'))
+  .catch(err => console.error('MongoDB error:', err.message));
 
 // ========== SCHEMAS ==========
 
