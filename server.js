@@ -10,13 +10,15 @@ app.use(cors());
 app.use(express.json());
 
 // MongoDB Connection
+const originalMongoUri = process.env.MONGO_URI || '';
 
-
-console.log('MongoDB legacy options check:',
-  /[?&](useNewUrlParser|useUnifiedTopology)=/i.test(process.env.MONGO_URI || '')
+console.log('MONGO_URI configured:', Boolean(originalMongoUri));
+console.log(
+  'Legacy options present:',
+  /[?&](?:useNewUrlParser|useUnifiedTopology)=/i.test(originalMongoUri)
 );
 
-const mongoUri = (process.env.MONGO_URI || '')
+const mongoUri = originalMongoUri
   .replace(/([?&])useNewUrlParser=[^&]*&?/gi, '$1')
   .replace(/([?&])useUnifiedTopology=[^&]*&?/gi, '$1')
   .replace(/\?&/g, '?')
